@@ -2,96 +2,124 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <link rel="manifest" href="manifest.json">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GRAU BRASIL ELITE 2026</title>
+    <title>GRAU BRASIL ELITE 3D - VERTICAL</title>
     <style>
         * { box-sizing: border-box; user-select: none; }
-        body { margin: 0; background: #0a0a0a; overflow: hidden; font-family: sans-serif; touch-action: none; }
-        canvas { display: block; }
-        
+        body { margin: 0; background: #000; overflow: hidden; font-family: 'Segoe UI', Tahoma, sans-serif; touch-action: none; }
+        canvas { display: block; width: 100vw; height: 100vh; }
+
+        /* HUD Estilo Elite Auto Brasil na Vertical */
         #hud {
             position: absolute; top: 15px; left: 15px; color: #fff;
-            background: rgba(0, 0, 0, 0.6); padding: 12px 18px; border-radius: 12px;
-            border-left: 4px solid #00ffcc; font-size: 14px; pointer-events: none;
+            background: rgba(10, 10, 15, 0.75); padding: 14px 20px; border-radius: 14px;
+            border-left: 5px solid #00ffcc; backdrop-filter: blur(8px);
+            font-size: 14px; pointer-events: none; box-shadow: 0 10px 30px rgba(0,0,0,0.8);
         }
-        #hud h1 { margin: 0 0 5px 0; font-size: 18px; color: #00ffcc; }
+        #hud h1 { margin: 0 0 6px 0; font-size: 18px; color: #00ffcc; letter-spacing: 1px; }
 
+        #btnCamera {
+            position: absolute; top: 20px; right: 20px;
+            background: rgba(0, 0, 0, 0.6); border: 2px solid #00ffcc; color: #00ffcc;
+            padding: 10px 14px; font-size: 13px; font-weight: bold; border-radius: 12px;
+            backdrop-filter: blur(5px); z-index: 10; cursor: pointer;
+        }
+
+        /* Botões na Tela em Pé (Modo Retrato) */
         .btn-ctrl {
-            position: absolute; bottom: 25px; background: rgba(255, 255, 255, 0.15);
-            border: 2px solid rgba(255, 255, 255, 0.4); color: white; padding: 22px 30px;
-            font-size: 18px; font-weight: bold; border-radius: 16px;
+            position: absolute; bottom: 30px; background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3); color: white; padding: 20px 24px;
+            font-size: 16px; font-weight: bold; border-radius: 18px; backdrop-filter: blur(5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
         }
-        .btn-ctrl:active { transform: scale(0.92); }
-        #btnAcelerar { right: 25px; border-color: #00ffcc; }
-        #btnFreio { right: 180px; border-color: #ff3333; background: rgba(255, 50, 50, 0.2); }
-        #btnGrau { left: 25px; border-color: #ffaa00; background: rgba(255, 170, 0, 0.2); }
-
-        #updateModal {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(5, 5, 5, 0.92); display: flex; flex-direction: column;
-            justify-content: center; align-items: center; z-index: 9999; color: #fff;
-            opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
-        }
-        #updateModal.active { opacity: 1; pointer-events: auto; }
-        .update-box {
-            background: #16161a; border: 1px solid #2a2a35; padding: 30px; border-radius: 20px;
-            width: 85%; max-width: 400px; text-align: center;
-        }
-        .progress-container {
-            background: #22222a; border-radius: 10px; height: 18px; width: 100%;
-            margin: 20px 0 10px 0; overflow: hidden; border: 1px solid #333340;
-        }
-        .progress-bar {
-            background: linear-gradient(90deg, #00b4d8, #00ffcc); height: 100%;
-            width: 0%; border-radius: 8px;
-        }
-        .update-info { font-size: 13px; color: #a0a0b0; display: flex; justify-content: space-between; }
+        .btn-ctrl:active { transform: scale(0.92); background: rgba(255, 255, 255, 0.3); }
+        #btnAcelerar { right: 20px; border-color: #00ffcc; background: rgba(0, 255, 204, 0.2); }
+        #btnFreio { right: 145px; border-color: #ff3333; background: rgba(255, 50, 50, 0.2); }
+        #btnGrau { left: 20px; border-color: #ffaa00; background: rgba(255, 170, 0, 0.2); }
     </style>
 </head>
 <body>
 
     <div id="hud">
-        <h1>GRAU BRASIL ELITE ⚡</h1>
-        Moto: <span style="color:#00ffcc">XRE 300 Sahara</span><br>
-        Velocidade: <span id="txtVel">0</span> km/h<br>
-        Ângulo: <span id="txtAngulo">0</span>°<br>
-        Status: <span id="txtStatus" style="color: #ffaa00">No Chão</span>
+        <h1>MOTO ELITE 3D ⚡</h1>
+        Velocidade: <span id="txtVel" style="color:#00ffcc">0</span> km/h<br>
+        Visão: <span id="txtCam">Terceira Pessoa</span>
     </div>
+
+    <button id="btnCamera">📷 CÂMERA</button>
 
     <button class="btn-ctrl" id="btnGrau">⚖️ GRAU</button>
     <button class="btn-ctrl" id="btnFreio">🛑 FREIO</button>
     <button class="btn-ctrl" id="btnAcelerar">🚀 ACELERAR</button>
 
-    <div id="updateModal">
-        <div class="update-box">
-            <h2 style="color: #00ffcc; margin-top:0;">🔥 NOVA ATUALIZAÇÃO</h2>
-            <p id="updateMsg">Baixando novos recursos do jogo...</p>
-            <div class="progress-container">
-                <div class="progress-bar" id="progressBar"></div>
-            </div>
-            <div class="update-info">
-                <span id="txtMb">0.0 MB / 18.4 MB</span>
-                <span id="txtPct">0%</span>
-            </div>
-        </div>
-    </div>
-
-    <canvas id="jogoCanvas"></canvas>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
-        const canvas = document.getElementById('jogoCanvas');
-        const ctx = canvas.getContext('2d');
-        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-        resize(); window.addEventListener('resize', resize);
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x080810);
+        scene.fog = new THREE.FogExp2(0x080810, 0.015);
 
-        let motoX = 150;
+        const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        document.body.appendChild(renderer.domElement);
+
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+
+        const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
+        dirLight.position.set(50, 100, 50);
+        scene.add(dirLight);
+
+        // Pista Vertical (Direção da Cidade)
+        const pistaGeo = new THREE.PlaneGeometry(25, 2000);
+        const pistaMat = new THREE.MeshStandardMaterial({ color: 0x15151b, roughness: 0.8 });
+        const pista = new THREE.Mesh(pistaGeo, pistaMat);
+        pista.rotation.x = -Math.PI / 2;
+        scene.add(pista);
+
+        // Prédios Laterais
+        const edificioMat = new THREE.MeshStandardMaterial({ color: 0x222436, roughness: 0.5 });
+        for (let i = -1000; i < 1000; i += 50) {
+            let alt1 = Math.random() * 70 + 30;
+            let predio1 = new THREE.Mesh(new THREE.BoxGeometry(25, alt1, 35), edificioMat);
+            predio1.position.set(-28, alt1 / 2, i);
+            scene.add(predio1);
+
+            let alt2 = Math.random() * 70 + 30;
+            let predio2 = new THREE.Mesh(new THREE.BoxGeometry(25, alt2, 35), edificioMat);
+            predio2.position.set(28, alt2 / 2, i);
+            scene.add(predio2);
+        }
+
+        // Moto 3D Detalhada
+        const motoGroup = new THREE.Group();
+        const chassiMat = new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 0.8, roughness: 0.2 });
+        const chassiMesh = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.7, 2.6), chassiMat);
+        chassiMesh.position.y = 0.9;
+        motoGroup.add(chassiMesh);
+
+        const rodaGeo = new THREE.CylinderGeometry(0.45, 0.45, 0.25, 32);
+        const rodaMat = new THREE.MeshStandardMaterial({ color: 0x111, roughness: 0.9 });
+        
+        const rodaTraseira = new THREE.Mesh(rodaGeo, rodaMat);
+        rodaTraseira.rotation.z = Math.PI / 2;
+        rodaTraseira.position.set(0, 0.45, -1.0);
+        motoGroup.add(rodaTraseira);
+
+        const rodaDianteira = new THREE.Mesh(rodaGeo, rodaMat);
+        rodaDianteira.rotation.z = Math.PI / 2;
+        rodaDianteira.position.set(0, 0.45, 1.1);
+        motoGroup.add(rodaDianteira);
+
+        scene.add(motoGroup);
+
         let velocidade = 0;
-        let angulo = 0;
+        let anguloEmpinada = 0;
         let acelerando = false, freando = false, empinando = false;
-        let distanciaTotal = 0;
+        let distanciaZ = 0;
+        let modoCamera1Pessoa = false;
 
-        // Controles Touch
         document.getElementById('btnAcelerar').addEventListener('touchstart', (e) => { e.preventDefault(); acelerando = true; });
         document.getElementById('btnAcelerar').addEventListener('touchend', () => { acelerando = false; });
         document.getElementById('btnFreio').addEventListener('touchstart', (e) => { e.preventDefault(); freando = true; });
@@ -99,82 +127,48 @@
         document.getElementById('btnGrau').addEventListener('touchstart', (e) => { e.preventDefault(); empinando = true; });
         document.getElementById('btnGrau').addEventListener('touchend', () => { empinando = false; });
 
-        function gameLoop() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        document.getElementById('btnCamera').addEventListener('click', () => {
+            modoCamera1Pessoa = !modoCamera1Pessoa;
+            document.getElementById('txtCam').innerText = modoCamera1Pessoa ? "1ª Pessoa (Visão do Piloto)" : "Terceira Pessoa";
+        });
 
-            // Cenário
-            let grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
-            grad.addColorStop(0, '#1a1a2e'); grad.addColorStop(1, '#e94560');
-            ctx.fillStyle = grad; ctx.fillRect(0, 0, canvas.width, canvas.height);
+        function animate() {
+            requestAnimationFrame(animate);
 
-            distanciaTotal += velocidade * 0.2;
-            let offset = distanciaTotal % 80;
-            ctx.fillStyle = '#222228'; ctx.fillRect(0, canvas.height - 130, canvas.width, 130);
-            ctx.fillStyle = '#f0a500';
-            for(let x = -offset; x < canvas.width; x += 80) { ctx.fillRect(x, canvas.height - 70, 45, 6); }
+            if (acelerando) { if (velocidade < 180) velocidade += 1.2; }
+            else { if (velocidade > 0) velocidade -= 0.8; }
+            if (freando && velocidade > 0) velocidade -= 3;
 
-            // Física
-            if (acelerando && velocidade < 140) velocidade += 0.8;
-            else if (!acelerando && velocidade > 0) velocidade -= 0.5;
-            if (freando && velocidade > 0) velocidade -= 2;
+            distanciaZ += velocidade * 0.15;
+            motoGroup.position.z = -distanciaZ;
 
-            let statusTxt = "No Chão", corSt = "#00ffcc";
-            if (empinando && velocidade > 15) {
-                if (angulo < 68) angulo += 1.8;
-                statusTxt = angulo > 55 ? "🔥 NO GRAU (CHAPA)!" : "Empinando...";
-                corSt = "#ffaa00";
-            } else if (angulo > 0) {
-                angulo -= 2.2;
+            if (empinando && velocidade > 20) {
+                if (anguloEmpinada < 0.75) anguloEmpinada += 0.03;
+            } else {
+                if (anguloEmpinada > 0) anguloEmpinada -= 0.04;
+            }
+            motoGroup.rotation.x = -anguloEmpinada;
+
+            // Câmeras ajustadas perfeitamente para tela em pé (Retrato)
+            if (modoCamera1Pessoa) {
+                camera.position.set(motoGroup.position.x, motoGroup.position.y + 1.3, motoGroup.position.z + 0.1);
+                camera.rotation.set(-anguloEmpinada, 0, 0);
+            } else {
+                camera.position.set(motoGroup.position.x, motoGroup.position.y + 2.8, motoGroup.position.z - 5.5);
+                camera.lookAt(motoGroup.position.x, motoGroup.position.y + 0.8, motoGroup.position.z + 2);
             }
 
-            if (angulo > 69) { statusTxt = "💥 CAPOTOU!"; corSt = "#ff3333"; angulo = 0; velocidade = 0; }
-
-            // Desenhar Moto
-            ctx.save();
-            ctx.translate(motoX, canvas.height - 110);
-            ctx.rotate(-angulo * Math.PI / 180);
-
-            ctx.fillStyle = '#111';
-            ctx.beginPath();
-            ctx.arc(-32, 12, 16, 0, Math.PI * 2);
-            ctx.arc(38, 12, 16, 0, Math.PI * 2);
-            ctx.fill();
-
-            ctx.fillStyle = '#e63946'; ctx.fillRect(-28, -12, 60, 22);
-            ctx.fillStyle = '#1d3557'; ctx.fillRect(-15, -28, 35, 18);
-            ctx.restore();
-
-            document.getElementById('txtVel').innerText = Math.floor(velocidade * 2.2);
-            document.getElementById('txtAngulo').innerText = Math.floor(angulo);
-            let st = document.getElementById('txtStatus');
-            st.innerText = statusTxt; st.style.color = corSt;
-
-            requestAnimationFrame(gameLoop);
+            document.getElementById('txtVel').innerText = Math.floor(velocidade);
+            renderer.render(scene, camera);
         }
 
-        // Sistema de Auto-Update
-        async function verificarUpdate() {
-            try {
-                let res = await fetch('https://raw.githubusercontent.com/cagocagao3-hub/Meujogo/main/version.json');
-                let dados = await res.json();
-                if (dados.versao !== "1.0.0") {
-                    document.getElementById('updateModal').classList.add('active');
-                    let prog = 0;
-                    let inter = setInterval(() => {
-                        prog += 5;
-                        if (prog >= 100) {
-                            clearInterval(inter);
-                            window.location.href = dados.url_download;
-                        }
-                        document.getElementById('progressBar').style.width = prog + '%';
-                        document.getElementById('txtPct').innerText = prog + '%';
-                    }, 100);
-                }
-            } catch(e) { console.log("Modo offline ativo"); }
-        }
+        animate();
 
-        requestAnimationFrame(gameLoop);
-        setTimeout(verificarUpdate, 3000);
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
     </script>
 </body>
 </html>
