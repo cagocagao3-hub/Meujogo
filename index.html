@@ -3,123 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GRAU BRASIL ELITE 3D - VERTICAL</title>
+    <title>GRAU BRASIL ELITE 2D</title>
     <style>
         * { box-sizing: border-box; user-select: none; }
-        body { margin: 0; background: #000; overflow: hidden; font-family: 'Segoe UI', Tahoma, sans-serif; touch-action: none; }
+        body { margin: 0; background: #050508; overflow: hidden; font-family: 'Segoe UI', Tahoma, sans-serif; touch-action: none; }
         canvas { display: block; width: 100vw; height: 100vh; }
 
-        /* HUD Estilo Elite Auto Brasil na Vertical */
+        /* HUD Estilo Jogo de Console Profissional */
         #hud {
             position: absolute; top: 15px; left: 15px; color: #fff;
-            background: rgba(10, 10, 15, 0.75); padding: 14px 20px; border-radius: 14px;
+            background: rgba(12, 12, 20, 0.85); padding: 12px 18px; border-radius: 14px;
             border-left: 5px solid #00ffcc; backdrop-filter: blur(8px);
-            font-size: 14px; pointer-events: none; box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            font-size: 14px; pointer-events: none; box-shadow: 0 10px 25px rgba(0,0,0,0.8);
         }
-        #hud h1 { margin: 0 0 6px 0; font-size: 18px; color: #00ffcc; letter-spacing: 1px; }
+        #hud h1 { margin: 0 0 4px 0; font-size: 17px; color: #00ffcc; letter-spacing: 1px; }
 
-        #btnCamera {
-            position: absolute; top: 20px; right: 20px;
-            background: rgba(0, 0, 0, 0.6); border: 2px solid #00ffcc; color: #00ffcc;
-            padding: 10px 14px; font-size: 13px; font-weight: bold; border-radius: 12px;
-            backdrop-filter: blur(5px); z-index: 10; cursor: pointer;
-        }
-
-        /* Botões na Tela em Pé (Modo Retrato) */
+        /* Botões de Controle Profissionais */
         .btn-ctrl {
-            position: absolute; bottom: 30px; background: rgba(255, 255, 255, 0.1);
-            border: 2px solid rgba(255, 255, 255, 0.3); color: white; padding: 20px 24px;
-            font-size: 16px; font-weight: bold; border-radius: 18px; backdrop-filter: blur(5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            position: absolute; bottom: 25px; background: rgba(255, 255, 255, 0.12);
+            border: 2px solid rgba(255, 255, 255, 0.35); color: white; padding: 22px 28px;
+            font-size: 17px; font-weight: bold; border-radius: 18px; backdrop-filter: blur(6px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
         }
         .btn-ctrl:active { transform: scale(0.92); background: rgba(255, 255, 255, 0.3); }
         #btnAcelerar { right: 20px; border-color: #00ffcc; background: rgba(0, 255, 204, 0.2); }
-        #btnFreio { right: 145px; border-color: #ff3333; background: rgba(255, 50, 50, 0.2); }
+        #btnFreio { right: 165px; border-color: #ff3333; background: rgba(255, 50, 50, 0.2); }
         #btnGrau { left: 20px; border-color: #ffaa00; background: rgba(255, 170, 0, 0.2); }
     </style>
 </head>
 <body>
 
     <div id="hud">
-        <h1>MOTO ELITE 3D ⚡</h1>
+        <h1>GRAU BRASIL ELITE ⚡</h1>
         Velocidade: <span id="txtVel" style="color:#00ffcc">0</span> km/h<br>
-        Visão: <span id="txtCam">Terceira Pessoa</span>
+        Ângulo do Grau: <span id="txtAng" style="color:#ffaa00">0</span>°<br>
+        Status: <span id="txtStatus" style="color:#fff">No Chão</span>
     </div>
-
-    <button id="btnCamera">📷 CÂMERA</button>
 
     <button class="btn-ctrl" id="btnGrau">⚖️ GRAU</button>
     <button class="btn-ctrl" id="btnFreio">🛑 FREIO</button>
     <button class="btn-ctrl" id="btnAcelerar">🚀 ACELERAR</button>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
-        const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x080810);
-        scene.fog = new THREE.FogExp2(0x080810, 0.015);
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        document.body.appendChild(canvas);
 
-        const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.shadowMap.enabled = true;
-        document.body.appendChild(renderer.domElement);
-
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-        scene.add(ambientLight);
-
-        const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
-        dirLight.position.set(50, 100, 50);
-        scene.add(dirLight);
-
-        // Pista Vertical (Direção da Cidade)
-        const pistaGeo = new THREE.PlaneGeometry(25, 2000);
-        const pistaMat = new THREE.MeshStandardMaterial({ color: 0x15151b, roughness: 0.8 });
-        const pista = new THREE.Mesh(pistaGeo, pistaMat);
-        pista.rotation.x = -Math.PI / 2;
-        scene.add(pista);
-
-        // Prédios Laterais
-        const edificioMat = new THREE.MeshStandardMaterial({ color: 0x222436, roughness: 0.5 });
-        for (let i = -1000; i < 1000; i += 50) {
-            let alt1 = Math.random() * 70 + 30;
-            let predio1 = new THREE.Mesh(new THREE.BoxGeometry(25, alt1, 35), edificioMat);
-            predio1.position.set(-28, alt1 / 2, i);
-            scene.add(predio1);
-
-            let alt2 = Math.random() * 70 + 30;
-            let predio2 = new THREE.Mesh(new THREE.BoxGeometry(25, alt2, 35), edificioMat);
-            predio2.position.set(28, alt2 / 2, i);
-            scene.add(predio2);
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
         }
+        resize();
+        window.addEventListener('resize', resize);
 
-        // Moto 3D Detalhada
-        const motoGroup = new THREE.Group();
-        const chassiMat = new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 0.8, roughness: 0.2 });
-        const chassiMesh = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.7, 2.6), chassiMat);
-        chassiMesh.position.y = 0.9;
-        motoGroup.add(chassiMesh);
-
-        const rodaGeo = new THREE.CylinderGeometry(0.45, 0.45, 0.25, 32);
-        const rodaMat = new THREE.MeshStandardMaterial({ color: 0x111, roughness: 0.9 });
-        
-        const rodaTraseira = new THREE.Mesh(rodaGeo, rodaMat);
-        rodaTraseira.rotation.z = Math.PI / 2;
-        rodaTraseira.position.set(0, 0.45, -1.0);
-        motoGroup.add(rodaTraseira);
-
-        const rodaDianteira = new THREE.Mesh(rodaGeo, rodaMat);
-        rodaDianteira.rotation.z = Math.PI / 2;
-        rodaDianteira.position.set(0, 0.45, 1.1);
-        motoGroup.add(rodaDianteira);
-
-        scene.add(motoGroup);
-
+        // Variáveis do Jogo
+        let motoX = 180;
         let velocidade = 0;
-        let anguloEmpinada = 0;
-        let acelerando = false, freando = false, empinando = false;
-        let distanciaZ = 0;
-        let modoCamera1Pessoa = false;
+        let angulo = 0;
+        let acelerando = false;
+        let freando = false;
+        let empinando = false;
+        let distanciaFundo = 0;
 
+        // Controles Touch
         document.getElementById('btnAcelerar').addEventListener('touchstart', (e) => { e.preventDefault(); acelerando = true; });
         document.getElementById('btnAcelerar').addEventListener('touchend', () => { acelerando = false; });
         document.getElementById('btnFreio').addEventListener('touchstart', (e) => { e.preventDefault(); freando = true; });
@@ -127,48 +73,126 @@
         document.getElementById('btnGrau').addEventListener('touchstart', (e) => { e.preventDefault(); empinando = true; });
         document.getElementById('btnGrau').addEventListener('touchend', () => { empinando = false; });
 
-        document.getElementById('btnCamera').addEventListener('click', () => {
-            modoCamera1Pessoa = !modoCamera1Pessoa;
-            document.getElementById('txtCam').innerText = modoCamera1Pessoa ? "1ª Pessoa (Visão do Piloto)" : "Terceira Pessoa";
-        });
+        function update() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        function animate() {
-            requestAnimationFrame(animate);
+            // 1. Céu Noturno Estilizado
+            let gradCeu = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradCeu.addColorStop(0, '#020205');
+            gradCeu.addColorStop(0.7, '#111122');
+            gradCeu.addColorStop(1, '#1f1b24');
+            ctx.fillStyle = gradCeu;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            if (acelerando) { if (velocidade < 180) velocidade += 1.2; }
-            else { if (velocidade > 0) velocidade -= 0.8; }
-            if (freando && velocidade > 0) velocidade -= 3;
-
-            distanciaZ += velocidade * 0.15;
-            motoGroup.position.z = -distanciaZ;
-
-            if (empinando && velocidade > 20) {
-                if (anguloEmpinada < 0.75) anguloEmpinada += 0.03;
-            } else {
-                if (anguloEmpinada > 0) anguloEmpinada -= 0.04;
-            }
-            motoGroup.rotation.x = -anguloEmpinada;
-
-            // Câmeras ajustadas perfeitamente para tela em pé (Retrato)
-            if (modoCamera1Pessoa) {
-                camera.position.set(motoGroup.position.x, motoGroup.position.y + 1.3, motoGroup.position.z + 0.1);
-                camera.rotation.set(-anguloEmpinada, 0, 0);
-            } else {
-                camera.position.set(motoGroup.position.x, motoGroup.position.y + 2.8, motoGroup.position.z - 5.5);
-                camera.lookAt(motoGroup.position.x, motoGroup.position.y + 0.8, motoGroup.position.z + 2);
+            // 2. Prédios da Cidade no Fundo (Movimento Parallax)
+            distanciaFundo += velocidade * 0.1;
+            let larguraPredio = 90;
+            ctx.fillStyle = '#0b0b12';
+            for (let i = -2; i < (canvas.width / larguraPredio) + 3; i++) {
+                let xPos = (i * larguraPredio) - (distanciaFundo % larguraPredio);
+                let alturaPredio = 220 + (Math.sin(i * 123) * 80);
+                ctx.fillRect(xPos, canvas.height - 220 - alturaPredio, larguraPredio - 10, alturaPredio);
+                
+                // Janelas iluminadas dos prédios
+                ctx.fillStyle = '#ffd166';
+                for(let j = 0; j < 3; j++) {
+                    ctx.fillRect(xPos + 15 + (j * 20), canvas.height - 200 - alturaPredio + (j * 30), 8, 12);
+                }
+                ctx.fillStyle = '#0b0b12';
             }
 
+            // 3. Pista / Asfalto Realista
+            let yAsfalto = canvas.height - 150;
+            ctx.fillStyle = '#181820';
+            ctx.fillRect(0, yAsfalto, canvas.width, 150);
+
+            // Linhas amarelas da pista passando
+            ctx.fillStyle = '#f39c12';
+            let offsetFaixa = (distanciaFundo * 2) % 60;
+            for (let x = -offsetFaixa; x < canvas.width; x += 60) {
+                ctx.fillRect(x, yAsfalto + 65, 35, 6);
+            }
+
+            // 4. Física da Moto e Grau
+            if (acelerando) {
+                if (velocidade < 160) velocidade += 0.8;
+            } else {
+                if (velocidade > 0) velocidade -= 0.5;
+            }
+            if (freando && velocidade > 0) velocidade -= 2.5;
+
+            let statusTxt = "No Chão";
+            let corSt = "#00ffcc";
+
+            if (empinando && velocidade > 12) {
+                if (angulo < 65) angulo += 1.6;
+                statusTxt = angulo > 50 ? "🔥 NA CHAPA!" : "Empinando...";
+                corSt = "#ffaa00";
+            } else {
+                if (angulo > 0) angulo -= 2.0;
+            }
+
+            if (angulo > 66) {
+                statusTxt = "💥 CAPOTOU!";
+                corSt = "#ff3333";
+                angulo = 0;
+                velocidade = 0;
+            }
+
+            // 5. Desenho Detalhado da Moto (Estilo Esportivo)
+            ctx.save();
+            ctx.translate(motoX, yAsfalto - 20);
+            ctx.rotate(-angulo * Math.PI / 180);
+
+            // Fumaça no pneu traseiro ao acelerar forte no grau
+            if (empinando && acelerando && Math.random() > 0.4) {
+                ctx.fillStyle = "rgba(255,255,255,0.3)";
+                ctx.beginPath();
+                ctx.arc(-35, 10, Math.random() * 10 + 5, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Rodas
+            ctx.fillStyle = '#111';
+            ctx.beginPath();
+            ctx.arc(-35, 15, 15, 0, Math.PI * 2); // Traseira
+            ctx.arc(38, 15, 15, 0, Math.PI * 2);  // Dianteira
+            ctx.fill();
+            ctx.strokeStyle = '#444'; ctx.lineWidth = 4; ctx.stroke();
+
+            // Carenagem Principal / Chassi Esportivo
+            ctx.fillStyle = '#e63946'; // Vermelho Elite
+            ctx.beginPath();
+            ctx.moveTo(-30, -5);
+            ctx.lineTo(30, -10);
+            ctx.lineTo(45, 10);
+            ctx.lineTo(-30, 10);
+            ctx.closePath();
+            ctx.fill();
+
+            // Tanque e Banco
+            ctx.fillStyle = '#1d3557';
+            ctx.fillRect(-12, -26, 32, 16);
+
+            // Piloto com Capacete
+            ctx.fillStyle = '#fff';
+            ctx.beginPath();
+            ctx.arc(2, -35, 11, 0, Math.PI * 2); // Capacete
+            ctx.fill();
+
+            ctx.restore();
+
+            // Atualizar Informações na Tela (HUD)
             document.getElementById('txtVel').innerText = Math.floor(velocidade);
-            renderer.render(scene, camera);
+            document.getElementById('txtAng').innerText = Math.floor(angulo);
+            let elSt = document.getElementById('txtStatus');
+            elSt.innerText = statusTxt;
+            elSt.style.color = corSt;
+
+            requestAnimationFrame(update);
         }
 
-        animate();
-
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
+        requestAnimationFrame(update);
     </script>
 </body>
 </html>
