@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
+    <link rel="manifest" href="manifest.json">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>GRAU BRASIL ELITE 2026</title>
     <style>
@@ -151,10 +152,10 @@
             requestAnimationFrame(gameLoop);
         }
 
-        // Sistema de Auto-Update (Barra de progresso simulada conectada ao GitHub)
+        // Sistema de Auto-Update
         async function verificarUpdate() {
             try {
-                let res = await fetch('https://raw.githubusercontent.com/SEU-USUARIO/SEU-REPOSITORIO/main/version.json');
+                let res = await fetch('https://raw.githubusercontent.com/cagocagao3-hub/Meujogo/main/version.json');
                 let dados = await res.json();
                 if (dados.versao !== "1.0.0") {
                     document.getElementById('updateModal').classList.add('active');
@@ -169,7 +170,7 @@
                         document.getElementById('txtPct').innerText = prog + '%';
                     }, 100);
                 }
-            } catch(e) { console.log("Rodando localmente"); }
+            } catch(e) { console.log("Modo offline ativo"); }
         }
 
         requestAnimationFrame(gameLoop);
