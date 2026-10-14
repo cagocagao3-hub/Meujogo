@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GRAU BRASIL ELITE 2026</title>
+    <style>
+        * { box-sizing: border-box; user-select: none; }
+        body { margin: 0; background: #0a0a0a; overflow: hidden; font-family: sans-serif; touch-action: none; }
+        canvas { display: block; }
+        
+        #hud {
+            position: absolute; top: 15px; left: 15px; color: #fff;
+            background: rgba(0, 0, 0, 0.6); padding: 12px 18px; border-radius: 12px;
+            border-left: 4px solid #00ffcc; font-size: 14px; pointer-events: none;
+        }
+        #hud h1 { margin: 0 0 5px 0; font-size: 18px; color: #00ffcc; }
+
+        .btn-ctrl {
+            position: absolute; bottom: 25px; background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.4); color: white; padding: 22px 30px;
+            font-size: 18px; font-weight: bold; border-radius: 16px;
+        }
+        .btn-ctrl:active { transform: scale(0.92); }
+        #btnAcelerar { right: 25px; border-color: #00ffcc; }
+        #btnFreio { right: 180px; border-color: #ff3333; background: rgba(255, 50, 50, 0.2); }
+        #btnGrau { left: 25px; border-color: #ffaa00; background: rgba(255, 170, 0, 0.2); }
+
+        #updateModal {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(5, 5, 5, 0.92); display: flex; flex-direction: column;
+            justify-content: center; align-items: center; z-index: 9999; color: #fff;
+            opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
+        }
+        #updateModal.active { opacity: 1; pointer-events: auto; }
+        .update-box {
+            background: #16161a; border: 1px solid #2a2a35; padding: 30px; border-radius: 20px;
+            width: 85%; max-width: 400px; text-align: center;
+        }
+        .progress-container {
+            background: #22222a; border-radius: 10px; height: 18px; width: 100%;
+            margin: 20px 0 10px 0; overflow: hidden; border: 1px solid #333340;
+        }
+        .progress-bar {
+            background: linear-gradient(90deg, #00b4d8, #00ffcc); height: 100%;
+            width: 0%; border-radius: 8px;
+        }
+        .update-info { font-size: 13px; color: #a0a0b0; display: flex; justify-content: space-between; }
+    </style>
+</head>
+<body>
+
+    <div id="hud">
+        <h1>GRAU BRASIL ELITE ⚡</h1>
+        Moto: <span style="color:#00ffcc">XRE 300 Sahara</span><br>
+        Velocidade: <span id="txtVel">0</span> km/h<br>
+        Ângulo: <span id="txtAngulo">0</span>°<br>
+        Status: <span id="txtStatus" style="color: #ffaa00">No Chão</span>
+    </div>
+
+    <button class="btn-ctrl" id="btnGrau">⚖️ GRAU</button>
+    <button class="btn-ctrl" id="btnFreio">🛑 FREIO</button>
+    <button class="btn-ctrl" id="btnAcelerar">🚀 ACELERAR</button>
+
+    <div id="updateModal">
+        <div class="update-box">
+            <h2 style="color: #00ffcc; margin-top:0;">🔥 NOVA ATUALIZAÇÃO</h2>
+            <p id="updateMsg">Baixando novos recursos do jogo...</p>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="update-info">
+                <span id="txtMb">0.0 MB / 18.4 MB</span>
+                <span id="txtPct">0%</span>
+            </div>
+        </div>
+    </div>
+
+    <canvas id="jogoCanvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('jogoCanvas');
+        const ctx = canvas.getContext('2d');
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        resize(); window.addEventListener('resize', resize);
+
+        let motoX = 150;
+        let velocidade = 0;
+        let angulo = 0;
+        let acelerando = false, freando = false, empinando = false;
+        let distanciaTotal = 0;
+
+        // Controles Touch
+        document.getElementById('btnAcelerar').addEventListener('touchstart', (e) => { e.preventDefault(); acelerando = true; });
+        document.getElementById('btnAcelerar').addEventListener('touchend', () => { acelerando = false; });
+        document.getElementById('btnFreio').addEventListener('touchstart', (e) => { e.preventDefault(); freando = true; });
+        document.getElementById('btnFreio').addEventListener('touchend', () => { freando = false; });
+        document.getElementById('btnGrau').addEventListener('touchstart', (e) => { e.preventDefault(); empinando = true; });
+        document.getElementById('btnGrau').addEventListener('touchend', () => { empinando = false; });
+
+        function gameLoop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Cenário
+            let grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            grad.addColorStop(0, '#1a1a2e'); grad.addColorStop(1, '#e94560');
+            ctx.fillStyle = grad; ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            distanciaTotal += velocidade * 0.2;
+            let offset = distanciaTotal % 80;
+            ctx.fillStyle = '#222228'; ctx.fillRect(0, canvas.height - 130, canvas.width, 130);
+            ctx.fillStyle = '#f0a500';
+            for(let x = -offset; x < canvas.width; x += 80) { ctx.fillRect(x, canvas.height - 70, 45, 6); }
+
+            // Física
+            if (acelerando && velocidade < 140) velocidade += 0.8;
+            else if (!acelerando && velocidade > 0) velocidade -= 0.5;
+            if (freando && velocidade > 0) velocidade -= 2;
+
+            let statusTxt = "No Chão", corSt = "#00ffcc";
+            if (empinando && velocidade > 15) {
+                if (angulo < 68) angulo += 1.8;
+                statusTxt = angulo > 55 ? "🔥 NO GRAU (CHAPA)!" : "Empinando...";
+                corSt = "#ffaa00";
+            } else if (angulo > 0) {
+                angulo -= 2.2;
+            }
+
+            if (angulo > 69) { statusTxt = "💥 CAPOTOU!"; corSt = "#ff3333"; angulo = 0; velocidade = 0; }
+
+            // Desenhar Moto
+            ctx.save();
+            ctx.translate(motoX, canvas.height - 110);
+            ctx.rotate(-angulo * Math.PI / 180);
+
+            ctx.fillStyle = '#111';
+            ctx.beginPath();
+            ctx.arc(-32, 12, 16, 0, Math.PI * 2);
+            ctx.arc(38, 12, 16, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = '#e63946'; ctx.fillRect(-28, -12, 60, 22);
+            ctx.fillStyle = '#1d3557'; ctx.fillRect(-15, -28, 35, 18);
+            ctx.restore();
+
+            document.getElementById('txtVel').innerText = Math.floor(velocidade * 2.2);
+            document.getElementById('txtAngulo').innerText = Math.floor(angulo);
+            let st = document.getElementById('txtStatus');
+            st.innerText = statusTxt; st.style.color = corSt;
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Sistema de Auto-Update (Barra de progresso simulada conectada ao GitHub)
+        async function verificarUpdate() {
+            try {
+                let res = await fetch('https://raw.githubusercontent.com/SEU-USUARIO/SEU-REPOSITORIO/main/version.json');
+                let dados = await res.json();
+                if (dados.versao !== "1.0.0") {
+                    document.getElementById('updateModal').classList.add('active');
+                    let prog = 0;
+                    let inter = setInterval(() => {
+                        prog += 5;
+                        if (prog >= 100) {
+                            clearInterval(inter);
+                            window.location.href = dados.url_download;
+                        }
+                        document.getElementById('progressBar').style.width = prog + '%';
+                        document.getElementById('txtPct').innerText = prog + '%';
+                    }, 100);
+                }
+            } catch(e) { console.log("Rodando localmente"); }
+        }
+
+        requestAnimationFrame(gameLoop);
+        setTimeout(verificarUpdate, 3000);
+    </script>
+</body>
+</html>
