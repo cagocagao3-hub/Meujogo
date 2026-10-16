@@ -9,8 +9,4 @@ services:
       - key: NODE_VERSION
         value: 20
       - key: DATABASE_PATH
-        value: /var/data/urban.sqlite
-    disk:
-      name: urban-data
-      mountPath: /var/data
-      sizeGB: 1
+        value: /opt/render/project/src/urban.sqlite

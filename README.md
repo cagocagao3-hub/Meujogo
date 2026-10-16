@@ -1,47 +1,33 @@
-# URBAN Roleplay V3 — protótipo multiplayer 3D
+# URBAN Roleplay V3.1 — protótipo multiplayer 3D
 
-Protótipo inicial para navegador/Android com Three.js, Node.js, Socket.IO e SQLite.
+Build de evolução para navegador e Android, usando Three.js, Node.js, Socket.IO e SQLite.
 
-## Recursos desta build
-- Registro/login com hash de senha bcrypt.
-- Personagem 3D básico e cidade procedural de teste.
-- Controles WASD e joystick no celular.
-- Multiplayer básico: jogadores, movimento e contador online.
-- Chat global.
-- Seleção de emprego e pagamento de $50 a cada 30 segundos.
-- Veículos 3D de demonstração e ação para tentar entrar.
-- Persistência SQLite para conta, dinheiro, emprego e posição.
-- Interface adaptada a telas pequenas.
+## O que mudou na V3.1
+- Interface do jogo refeita, com HUD menor, chat compacto no canto superior esquerdo e GPS/minimapa.
+- Cidade procedural ampliada visualmente com avenidas, calçadas, prédios, janelas, árvores, postes, praça e placas.
+- Personagem humanoide low-poly com cabeça, roupa, braços, pernas e animação básica de caminhada/corrida.
+- Joystick de toque revisado, WASD/teclas de seta, corrida e câmera de terceira pessoa.
+- Centro de Empregos: o menu abre ao chegar ao checkpoint amarelo; selecionar um emprego leva o personagem ao pátio de serviço.
+- Turnos de serviço iniciados no pátio azul. Entregador recebe uma moto; Taxista e Mecânico recebem veículos de serviço de demonstração.
+- Cada serviço marca um destino no mundo e no minimapa. Ao chegar e interagir, o servidor valida a distância, paga $50 e encerra o turno.
+- Chat global compacto, contador de jogadores, dinheiro e emprego atualizados.
+- Login/cadastro com hash de senha, SQLite e endpoint de restauração de sessão enquanto a sessão existir em memória.
 
-## Requisitos
-Node.js 18 ou superior. Para desenvolver no Android, use Termux com Node.js, ou edite o projeto no GitHub e publique no Render.
-
-## Executar no computador/Termux
+## Executar
 ```bash
 npm install
 npm start
 ```
 Abra `http://localhost:3000`.
 
-No Termux, se o pacote `better-sqlite3` não conseguir compilar, a alternativa mais simples é executar a build no Render ou trocar o driver SQLite por um compatível com o ambiente. O Android não é um ambiente de hospedagem estável para deixar o servidor 24h online.
-
 ## Publicar no Render pelo celular
-1. Crie um repositório no GitHub e envie todos os arquivos desta pasta.
-2. No Render, escolha **New + → Blueprint** e conecte o repositório com `render.yaml`, ou crie um Web Service Node.
-3. Build command: `npm install`; Start command: `npm start`.
-4. Configure um disco persistente em `/var/data` e `DATABASE_PATH=/var/data/urban.sqlite`.
-5. Abra a URL fornecida pelo Render no navegador do Android.
+1. Envie todos os arquivos desta pasta para a raiz do repositório GitHub.
+2. No Render, crie um **Web Service** conectado ao repositório.
+3. Build Command: `npm install`.
+4. Start Command: `npm start`.
+5. Use Node.js 20.x. O arquivo `package.json` já fixa `engines.node` em `20.x`.
 
-O plano grátis e as condições de hospedagem podem mudar. Confirme limites e disponibilidade no painel do provedor.
+## Importante — protótipo, não versão final comercial
+O visual é feito de modelos low-poly gerados por código; não são modelos de personagem de GTA/SAMP nem animações profissionais. O controle de moto/carro é uma representação inicial de serviço e não possui física veicular completa, colisões complexas ou sincronização de veículo entre jogadores. Taxista e Mecânico usam a mesma estrutura de missão de rota com veículos visuais diferentes. Polícia, facções, inventário avançado, interiores, economia completa e ferramentas administrativas ainda não foram implementados.
 
-## Limitações importantes
-Esta é uma **build de protótipo**, não um jogo pronto para lançamento comercial. Os modelos de personagens, carros e edifícios são formas 3D simples. O sistema de dirigir é apenas demonstrativo; não há física veicular completa, animações profissionais, interior de casas, polícia, facções ou inventário avançado ainda.
-
-O token de login desta primeira build fica em memória no servidor; após reiniciar o servidor, pode ser necessário entrar novamente. Antes de abrir ao público, implemente sessão persistente/expiração, rate limiting, validação autoritativa de movimento, proteção contra spam no chat, moderação, backups e testes de carga. A persistência do SQLite depende de configurar corretamente um disco persistente na hospedagem.
-
-## Próximos passos sugeridos
-1. Testar registro/login em duas janelas ou dispositivos.
-2. Corrigir bugs encontrados no Android.
-3. Implementar condução real com sincronização do veículo.
-4. Adicionar criação/customização de personagem e inventário.
-5. Migrar para um banco gerenciado se o projeto crescer.
+No Render grátis, o sistema de arquivos é temporário e o SQLite local pode perder dados após reinício/suspensão/deploy. Para preservar contas e dinheiro em produção, migre para um banco gerenciado como PostgreSQL. Os tokens ficam em memória no servidor, então após reiniciar pode ser necessário entrar novamente. Antes de abrir ao público, implemente rate limiting, sessões persistentes/expiração, validação autoritativa de movimento, proteção contra spam no chat, moderação, backups e testes de carga.
