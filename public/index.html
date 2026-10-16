@@ -1,71 +1,24 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-  <meta name="theme-color" content="#080c14">
-  <title>URBAN Roleplay V3</title>
-  <link rel="stylesheet" href="/style.css">
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="theme-color" content="#080c14"><title>URBAN Roleplay V3.1</title><link rel="stylesheet" href="/style.css">
 </head>
 <body>
-  <div id="auth" class="screen">
-    <div class="brand">URBAN<span>RP</span><small>ROLEPLAY MULTIPLAYER</small></div>
-    <div class="auth-card">
-      <h1 id="authTitle">Entre na cidade</h1>
-      <p>Crie sua conta ou entre para continuar.</p>
-      <form id="authForm">
-        <label>Usuário</label>
-        <input id="username" autocomplete="username" minlength="3" maxlength="20" placeholder="SeuNick" required>
-        <label>Senha</label>
-        <input id="password" type="password" autocomplete="current-password" minlength="6" maxlength="72" placeholder="Mínimo de 6 caracteres" required>
-        <button id="authSubmit" type="submit">ENTRAR</button>
-      </form>
-      <button id="switchAuth" class="text-button">Ainda não tenho conta — registrar</button>
-      <p id="authError" class="error"></p>
-      <div class="smallprint">Protótipo de desenvolvimento · Não use uma senha que você já utiliza em outros sites.</div>
-    </div>
-  </div>
-
-  <main id="game" hidden>
-    <canvas id="world"></canvas>
-    <header class="hud">
-      <div class="brand-mini">URBAN<span>RP</span></div>
-      <div class="hud-right">
-        <div class="pill" id="onlineCount">● 0 online</div>
-        <div class="pill cash" id="cash">$500</div>
-      </div>
-    </header>
-    <div class="player-card">
-      <strong id="characterName">Cidadão</strong>
-      <span id="jobName">Desempregado</span>
-    </div>
-    <div class="help-pill">WASD / toque para andar · aproxime-se do marcador amarelo</div>
-    <div class="actions">
-      <button id="jobButton">TRABALHAR +$50</button>
-      <button id="jobsButton" class="secondary">EMPREGOS</button>
-      <button id="vehicleButton" class="secondary">ENTRAR NO CARRO</button>
-      <button id="saveButton" class="secondary">SALVAR</button>
-    </div>
-    <div id="jobMenu" class="job-menu" hidden>
-      <strong>Escolha seu emprego</strong>
-      <button data-job="Entregador">Entregador</button>
-      <button data-job="Taxista">Taxista</button>
-      <button data-job="Mecânico">Mecânico</button>
-      <button data-job="Desempregado">Desempregado</button>
-      <button id="closeJobs" class="secondary">FECHAR</button>
-    </div>
-    <section class="chat">
-      <div id="chatMessages" class="chat-messages"><div class="system-message">Bem-vindo à cidade! Seja respeitoso no roleplay.</div></div>
-      <form id="chatForm"><input id="chatInput" maxlength="180" placeholder="Digite uma mensagem..." autocomplete="off"><button>ENVIAR</button></form>
-    </section>
-    <div id="touchControls" class="touch-controls">
-      <div id="joystick" class="joystick"><div id="stick" class="stick"></div></div>
-      <div class="touch-right"><button id="runButton">CORRER</button><button id="interactButton">AÇÃO</button></div>
-    </div>
-    <div id="toast" class="toast"></div>
-    <button id="logoutButton" class="logout">SAIR</button>
+  <div id="auth" class="screen"><div class="auth-wrap"><div class="brand">URBAN<span>RP</span><small>ROLEPLAY MULTIPLAYER</small></div><div class="auth-card"><h1 id="authTitle">Entre na cidade</h1><p>Seu próximo capítulo começa aqui.</p><form id="authForm"><label>Usuário</label><input id="username" autocomplete="username" minlength="3" maxlength="20" placeholder="SeuNick" required><label>Senha</label><input id="password" type="password" autocomplete="current-password" minlength="6" maxlength="72" placeholder="Mínimo de 6 caracteres" required><button id="authSubmit" type="submit">ENTRAR NA CIDADE</button></form><button id="switchAuth" class="text-button">Ainda não tenho conta — registrar</button><p id="authError" class="error"></p><div class="smallprint">Protótipo em desenvolvimento. Não reutilize senhas pessoais.</div></div></div></div>
+  <main id="game" hidden><canvas id="world"></canvas>
+    <header class="hud"><div class="brand-mini">URBAN<span>RP</span><small>LOS URBANOS</small></div><div class="hud-right"><div class="pill online" id="onlineCount">● 0 online</div><div class="pill cash" id="cash">$500</div></div></header>
+    <section class="player-card"><span class="eyebrow">PERSONAGEM</span><strong id="characterName">Cidadão</strong><span id="jobName">Desempregado</span></section>
+    <section class="chat" id="chatPanel"><div class="chat-heading"><span>CHAT DA CIDADE</span><button id="chatToggle" type="button" aria-label="Minimizar chat">−</button></div><div id="chatMessages" class="chat-messages"><div class="system-message">Bem-vindo à cidade. Respeite o roleplay.</div></div><form id="chatForm"><input id="chatInput" maxlength="180" placeholder="Pressione aqui e digite..." autocomplete="off"><button aria-label="Enviar mensagem">➤</button></form></section>
+    <section class="mission-card" id="missionCard" hidden><div class="mission-kicker">SERVIÇO ATIVO</div><strong id="missionTitle">Entrega</strong><span id="missionDestination">Destino: —</span><div class="mission-progress"><span id="missionHint">Siga o marcador dourado</span></div></section>
+    <section class="map-card"><div class="map-label">GPS <span id="gpsDistance">SEM ROTA</span></div><canvas id="miniMap" width="180" height="180"></canvas></section>
+    <div class="help-pill" id="contextHint">Vá ao checkpoint amarelo para procurar emprego.</div>
+    <section class="interact-prompt" id="interactPrompt" hidden><span class="keycap">E</span><span id="interactText">Centro de Empregos</span><button id="promptAction">INTERAGIR</button></section>
+    <section class="actions"><button id="interactButton" class="primary-action"><span>✦</span><b>AÇÃO</b><small>Interagir</small></button><button id="vehicleButton" class="action-button"><span>🚗</span><b>VEÍCULOS</b></button><button id="saveButton" class="action-button"><span>▣</span><b>SALVAR</b></button></section>
+    <section id="jobMenu" class="modal-layer" hidden><div class="modal-card"><button id="closeJobs" class="modal-close" aria-label="Fechar">×</button><span class="modal-eyebrow">PREFEITURA • RECURSOS HUMANOS</span><h2>Central de empregos</h2><p>Escolha uma profissão para começar sua vida na cidade.</p><div class="job-list"><button data-job="Entregador" class="job-option"><span class="job-icon">◈</span><span><b>Entregador</b><small>Retire a moto, siga o GPS e entregue pedidos.</small></span><strong>$50</strong></button><button data-job="Taxista" class="job-option"><span class="job-icon">▰</span><span><b>Taxista</b><small>Faça uma corrida até o ponto indicado.</small></span><strong>$50</strong></button><button data-job="Mecânico" class="job-option"><span class="job-icon">⚙</span><span><b>Mecânico</b><small>Leve ferramentas até o local do chamado.</small></span><strong>$50</strong></button></div><div class="modal-footer">O pagamento é liberado pelo servidor após chegar ao destino.</div></div></section>
+    <section id="vehicleMenu" class="modal-layer" hidden><div class="modal-card vehicle-modal"><button id="closeVehicles" class="modal-close" aria-label="Fechar">×</button><span class="modal-eyebrow">GARAGEM DA CIDADE</span><h2>Veículos próximos</h2><p>Aproxime-se de um veículo para ver as opções.</p><div id="vehicleList" class="vehicle-list"></div></div></section>
+    <div id="touchControls" class="touch-controls"><div id="joystick" class="joystick"><div id="stick" class="stick"></div><span class="joy-label">ANDAR</span></div><div class="touch-right"><button id="runButton">CORRER</button><button id="brakeButton" hidden>FREIO</button></div></div>
+    <div id="toast" class="toast"></div><button id="logoutButton" class="logout">SAIR ↗</button>
   </main>
-  <script src="/socket.io/socket.io.js"></script>
-  <script type="module" src="/game.js"></script>
-</body>
-</html>
+  <script src="/socket.io/socket.io.js"></script><script type="module" src="/game.js"></script>
+</body></html>
