@@ -59,16 +59,16 @@ const sessions = new Map();
 const online = new Map();
 const lastMove = new Map();
 const missions = new Map();
-const CHECKPOINT = { x: 0, z: -6 };
-const DEPOT = { x: 0, z: -14 };
-const JOB_LOCATIONS = { Entregador: { x: 0, z: -14, name: 'Garagem de entregas' }, Taxista: { x: 40, z: 0, name: 'Ponto de táxi' }, Mecânico: { x: -40, z: 0, name: 'Oficina mecânica' } };
+const CHECKPOINT = { x: -60, z: 30 };
+const DEPOT = { x: -90, z: 0 };
+const JOB_LOCATIONS = { Entregador: { x: -90, z: 0, name: 'Garagem de entregas' }, Taxista: { x: 0, z: 80, name: 'Ponto de táxi' }, Mecânico: { x: -70, z: -60, name: 'Oficina mecânica' } };
 const DESTINATIONS = [
-  { x: 54, z: -54, name: 'Restaurante Verona' },
-  { x: -54, z: 46, name: 'Lanchonete Central' },
-  { x: 86, z: 34, name: 'Mercado da Praça' },
-  { x: -86, z: -34, name: 'Condomínio Vista' },
-  { x: 34, z: 86, name: 'Café da Estação' },
-  { x: -34, z: -86, name: 'Doca Norte' }
+  { x: 90, z: 0, name: 'Mercado Municipal' },
+  { x: 70, z: 30, name: 'Hospital Central' },
+  { x: 70, z: -60, name: 'Delegacia' },
+  { x: 0, z: -105, name: 'Marina / Doca' },
+  { x: 0, z: 0, name: 'Praça Central' },
+  { x: 30, z: 90, name: 'Café da Estação' }
 ];
 const JOBS = ['Desempregado', 'Entregador', 'Taxista', 'Mecânico'];
 const getAccount = db.prepare('SELECT * FROM accounts WHERE username = ? COLLATE NOCASE');

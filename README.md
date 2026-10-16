@@ -1,8 +1,8 @@
-# URBAN Roleplay V4.0 — atualização multiplayer 3D
+# URBAN Roleplay V4.1 — atualização multiplayer 3D
 
 Build de evolução para navegador e Android, usando Three.js, Node.js, Socket.IO e SQLite.
 
-## Novidades da V4.0
+## Novidades da V4.1
 - Interface do jogo refeita, com HUD menor, chat compacto no canto superior esquerdo e GPS/minimapa.
 - Cidade procedural ampliada visualmente com avenidas, calçadas, prédios, janelas, árvores, postes, praça e placas.
 - Personagem reconstruído com volumes arredondados, proporções mais naturais e animação básica de caminhada/corrida. Continua sendo um modelo original simplificado, não um modelo oficial de GTA V.
@@ -31,3 +31,10 @@ Abra `http://localhost:3000`.
 O visual é feito de modelos low-poly gerados por código; não são modelos de personagem de GTA/SAMP nem animações profissionais. O controle de moto/carro é uma representação inicial de serviço e não possui física veicular completa, colisões complexas ou sincronização de veículo entre jogadores. Taxista e Mecânico usam a mesma estrutura de missão de rota com veículos visuais diferentes. Polícia, facções, inventário avançado, interiores, economia completa e ferramentas administrativas ainda não foram implementados.
 
 No Render grátis, o sistema de arquivos é temporário e o SQLite local pode perder dados após reinício/suspensão/deploy. Para preservar contas e dinheiro em produção, migre para um banco gerenciado como PostgreSQL. Os tokens ficam em memória no servidor, então após reiniciar pode ser necessário entrar novamente. Antes de abrir ao público, implemente rate limiting, sessões persistentes/expiração, validação autoritativa de movimento, proteção contra spam no chat, moderação, backups e testes de carga.
+
+
+## V4.1 — atualização
+- Corrigido o sentido do joystick e a orientação do personagem/câmera em terceira pessoa.
+- Mapa reorganizado em distritos com prefeitura, garagem de entregas, ponto de táxi, oficina, hospital, delegacia, praça, mercado e marina.
+- Comando `/GPS` no chat abre a lista de destinos e marca a rota no mapa.
+- O botão ABRIR GPS também abre o navegador de destinos.

@@ -1,6 +1,6 @@
 {
-  "name": "urban-roleplay-v3",
-  "version": "3.1.0",
+  "name": "urban-roleplay-v4",
+  "version": "4.1.0",
   "description": "Protótipo multiplayer 3D de roleplay com empregos e entregas para navegador e Android",
   "main": "server.js",
   "scripts": {
