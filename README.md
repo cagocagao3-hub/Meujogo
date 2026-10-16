@@ -1,14 +1,14 @@
-# URBAN Roleplay V3.1 — protótipo multiplayer 3D
+# URBAN Roleplay V4.0 — atualização multiplayer 3D
 
 Build de evolução para navegador e Android, usando Three.js, Node.js, Socket.IO e SQLite.
 
-## O que mudou na V3.1
+## Novidades da V4.0
 - Interface do jogo refeita, com HUD menor, chat compacto no canto superior esquerdo e GPS/minimapa.
 - Cidade procedural ampliada visualmente com avenidas, calçadas, prédios, janelas, árvores, postes, praça e placas.
-- Personagem humanoide low-poly com cabeça, roupa, braços, pernas e animação básica de caminhada/corrida.
-- Joystick de toque revisado, WASD/teclas de seta, corrida e câmera de terceira pessoa.
-- Centro de Empregos: o menu abre ao chegar ao checkpoint amarelo; selecionar um emprego leva o personagem ao pátio de serviço.
-- Turnos de serviço iniciados no pátio azul. Entregador recebe uma moto; Taxista e Mecânico recebem veículos de serviço de demonstração.
+- Personagem reconstruído com volumes arredondados, proporções mais naturais e animação básica de caminhada/corrida. Continua sendo um modelo original simplificado, não um modelo oficial de GTA V.
+- Correção da orientação do personagem, câmera de terceira pessoa mais suave e distante, joystick de toque, WASD/setas e corrida.
+- Centro de Empregos no checkpoint amarelo e bases separadas no mapa: Garagem de Entregas, Ponto de Táxi e Oficina Mecânica. Ao ser contratado, o personagem é levado à base correspondente.
+- Turnos iniciados na base específica da profissão, com placas e checkpoints próprios. Entregador recebe uma moto; Taxista e Mecânico recebem veículos de serviço de demonstração.
 - Cada serviço marca um destino no mundo e no minimapa. Ao chegar e interagir, o servidor valida a distância, paga $50 e encerra o turno.
 - Chat global compacto, contador de jogadores, dinheiro e emprego atualizados.
 - Login/cadastro com hash de senha, SQLite e endpoint de restauração de sessão enquanto a sessão existir em memória.

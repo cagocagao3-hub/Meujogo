@@ -61,6 +61,7 @@ const lastMove = new Map();
 const missions = new Map();
 const CHECKPOINT = { x: 0, z: -6 };
 const DEPOT = { x: 0, z: -14 };
+const JOB_LOCATIONS = { Entregador: { x: 0, z: -14, name: 'Garagem de entregas' }, Taxista: { x: 40, z: 0, name: 'Ponto de táxi' }, Mecânico: { x: -40, z: 0, name: 'Oficina mecânica' } };
 const DESTINATIONS = [
   { x: 54, z: -54, name: 'Restaurante Verona' },
   { x: -54, z: 46, name: 'Lanchonete Central' },
@@ -98,7 +99,7 @@ function chooseDestination(previousIndex=-1) {
 }
 function publicMission(m) { return { job:m.job, phase:m.phase, target:{x:m.target.x,z:m.target.z,name:m.target.name}, vehicle:m.vehicle }; }
 
-app.get('/api/status', (_req,res)=>res.json({name:'URBAN Roleplay',version:'3.1.0',online:online.size}));
+app.get('/api/status', (_req,res)=>res.json({name:'URBAN Roleplay',version:'4.0.0',online:online.size}));
 app.get('/api/me',(req,res)=>{const token=String(req.headers.authorization||'').replace(/^Bearer\s+/i,'');const id=sessions.get(token);if(!id)return res.status(401).json({error:'Sessão expirada. Entre novamente.'});const player=publicPlayer(id);if(!player)return res.status(401).json({error:'Personagem não encontrado.'});res.json({player});});
 app.post('/api/register', async (req,res)=>{
   try {
@@ -133,7 +134,7 @@ io.on('connection',(socket)=>{
   for (const [sid,p] of online) if (p.accountId===accountId && sid!==socket.id) io.sockets.sockets.get(sid)?.disconnect(true);
   const player=publicPlayer(accountId); socket.player=player;
   online.set(socket.id,{...player,accountId,rotation:0});
-  socket.emit('world:init',{selfId:socket.id,...snapshot(),checkpoint:CHECKPOINT,depot:DEPOT});
+  socket.emit('world:init',{selfId:socket.id,...snapshot(),checkpoint:CHECKPOINT,depot:DEPOT,jobLocations:JOB_LOCATIONS});
   socket.broadcast.emit('player:joined',{id:socket.id,player:{...player}}); io.emit('world:count',online.size);
   const mission=missions.get(accountId); if (mission) socket.emit('mission:update',publicMission(mission));
 
@@ -159,16 +160,16 @@ io.on('connection',(socket)=>{
     db.prepare('UPDATE characters SET job=?,updated_at=CURRENT_TIMESTAMP WHERE account_id=?').run(job,accountId);
     const updated=updateSocketPlayer(socket); if(!updated)return;
     // Starting point of each job is deliberately near the work depot.
-    p.x=DEPOT.x; p.z=DEPOT.z; updated.x=p.x; updated.z=p.z;
+    const jobLocation=JOB_LOCATIONS[job]||DEPOT; p.x=jobLocation.x; p.z=jobLocation.z; updated.x=p.x; updated.z=p.z;
     saveCharacter.run(updated.cash,updated.job,p.x,updated.y,p.z,accountId);
-    socket.emit('job:accepted',{player:updated,teleport:{x:DEPOT.x,z:DEPOT.z},job});
+    socket.emit('job:accepted',{player:updated,teleport:{x:p.x,z:p.z,name:jobLocation.name},job});
     socket.broadcast.emit('player:moved',{id:socket.id,x:p.x,z:p.z,rotation:p.rotation||0});
     socket.emit('notice',`${job} contratado! Você foi levado ao pátio de serviço. Aproxime-se do marcador azul e toque em AÇÃO para iniciar o turno.`);
   });
   socket.on('job:start',()=>{
     const p=online.get(socket.id); if(!p)return;
     const c=getCharacter.get(accountId); if(!c||!['Entregador','Taxista','Mecânico'].includes(c.job)) return socket.emit('notice','Primeiro escolha um emprego no Centro de Empregos.');
-    if(distance(p,DEPOT)>8) return socket.emit('notice','Vá até o pátio de serviço para começar o turno.');
+    const jobLocation=JOB_LOCATIONS[c.job]||DEPOT; if(distance(p,jobLocation)>8) return socket.emit('notice',`Vá até ${jobLocation.name} para começar o turno.`);
     if(missions.has(accountId)) return socket.emit('notice','Você já tem um serviço ativo. Siga o marcador no mapa.');
     const target=chooseDestination();
     const m={job:c.job,phase:'route',target,vehicle:c.job==='Entregador'?'moto':c.job==='Taxista'?'taxi':'van'};
@@ -194,4 +195,4 @@ io.on('connection',(socket)=>{
   });
 });
 setInterval(()=>{for(const [sid,p] of online)saveCharacter.run(p.cash,p.job,p.x,p.y,p.z,p.accountId);},30000).unref();
-server.listen(PORT,'0.0.0.0',()=>console.log(`URBAN Roleplay v3.1 rodando na porta ${PORT}`));
+server.listen(PORT,'0.0.0.0',()=>console.log(`URBAN Roleplay v4.0.0 rodando na porta ${PORT}`));
