@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: urban-roleplay-v3
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: DATABASE_PATH
+        value: /var/data/urban.sqlite
+    disk:
+      name: urban-data
+      mountPath: /var/data
+      sizeGB: 1
