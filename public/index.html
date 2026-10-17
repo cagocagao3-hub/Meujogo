@@ -2,9 +2,17 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-  <meta name="theme-color" content="#080c14"><title>URBAN Roleplay V4.1</title><link rel="stylesheet" href="/style.css">
+  <meta name="theme-color" content="#080c14"><title>URBAN Roleplay V5</title><link rel="stylesheet" href="/style.css">
 </head>
 <body>
+  <div id="bootScreen" class="boot-screen" aria-label="Carregando URBAN Roleplay">
+    <div class="boot-brand">URBAN<span>RP</span><small>ROLEPLAY MULTIPLAYER</small></div>
+    <div class="boot-subtitle">PREPARANDO A CIDADE...</div>
+    <div class="boot-track"><div id="bootProgress" class="boot-progress"></div></div>
+    <div id="bootPercent" class="boot-percent">0%</div>
+    <div class="boot-tip">DICA: use o analógico esquerdo para andar e mantenha a câmera atrás do personagem.</div>
+  </div>
+  <div id="orientationNotice" class="orientation-notice"><div><strong>URBAN RP V5</strong><p>Para jogar melhor, gire o celular para a posição horizontal.</p><span>↻ MODO PAISAGEM</span></div></div>
   <div id="auth" class="screen"><div class="auth-wrap"><div class="brand">URBAN<span>RP</span><small>ROLEPLAY MULTIPLAYER</small></div><div class="auth-card"><h1 id="authTitle">Entre na cidade</h1><p>Seu próximo capítulo começa aqui.</p><form id="authForm"><label>Usuário</label><input id="username" autocomplete="username" minlength="3" maxlength="20" placeholder="SeuNick" required><label>Senha</label><input id="password" type="password" autocomplete="current-password" minlength="6" maxlength="72" placeholder="Mínimo de 6 caracteres" required><button id="authSubmit" type="submit">ENTRAR NA CIDADE</button></form><button id="switchAuth" class="text-button">Ainda não tenho conta — registrar</button><p id="authError" class="error"></p><div class="smallprint">Protótipo em desenvolvimento. Não reutilize senhas pessoais.</div></div></div></div>
   <main id="game" hidden><canvas id="world"></canvas>
     <header class="hud"><div class="brand-mini">URBAN<span>RP</span><small>LOS URBANOS</small></div><div class="hud-right"><div class="pill online" id="onlineCount">● 0 online</div><div class="pill cash" id="cash">$500</div></div></header>
@@ -22,4 +30,7 @@
     <div id="toast" class="toast"></div><button id="logoutButton" class="logout">SAIR ↗</button>
   </main>
   <script src="/socket.io/socket.io.js"></script><script type="module" src="/game.js"></script>
+  <script>
+    (()=>{const screen=document.getElementById('bootScreen'),bar=document.getElementById('bootProgress'),label=document.getElementById('bootPercent');let p=0;const tick=()=>{p=Math.min(100,p+Math.max(3,Math.random()*13));bar.style.width=p+'%';label.textContent=Math.floor(p)+'%';if(p<100)setTimeout(tick,90);else setTimeout(()=>{screen.classList.add('boot-done');setTimeout(()=>screen.remove(),550)},220)};tick()})();
+  </script>
 </body></html>
