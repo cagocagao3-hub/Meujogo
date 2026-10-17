@@ -195,4 +195,4 @@ io.on('connection',(socket)=>{
   });
 });
 setInterval(()=>{for(const [sid,p] of online)saveCharacter.run(p.cash,p.job,p.x,p.y,p.z,p.accountId);},30000).unref();
-server.listen(PORT,'0.0.0.0',()=>console.log(`URBAN Roleplay v4.0.0 rodando na porta ${PORT}`));
+server.listen(PORT,'0.0.0.0',()=>console.log(`URBAN Roleplay v5.1.0 rodando na porta ${PORT}`));

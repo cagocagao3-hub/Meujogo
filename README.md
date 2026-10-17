@@ -28,3 +28,10 @@ Abra `http://localhost:3000` no navegador. Para jogar com outras pessoas, publiq
 
 ## Observação
 Esta é uma atualização do protótipo fornecido, não uma garantia de ausência absoluta de bugs. O jogo deve ser testado no aparelho e no servidor de destino; a tela de carregamento é visual e não substitui o carregamento real de assets. O APK Android precisa ser empacotado separadamente (por exemplo, com uma WebView/Cordova/Capacitor).
+
+
+## V5.1 — correções
+- Removido o botão manual de salvar; o servidor salva automaticamente a cada 30 segundos e na desconexão.
+- Reduzido o custo gráfico no Android (sem antialiasing e sombras em tempo real) para diminuir travamentos.
+- Corrigida a conversão da direção de movimento para a rotação do personagem.
+- O progresso real depende de testar no aparelho e na hospedagem; não é possível prometer ausência total de bugs sem teste em execução.
