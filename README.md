@@ -1,37 +1,22 @@
-# URBAN Roleplay V5
+# URBAN Roleplay V6.0
 
-Protótipo multiplayer 3D de roleplay para navegador e dispositivos Android, com controles touch e layout paisagem.
+Protótipo multiplayer 3D para navegador, com layout adaptável a celular em orientação horizontal.
 
-## Requisitos
-- Node.js 20+
-- npm
+## Executar
 
-## Executar localmente
-```bash
-npm install
-npm start
-```
-Abra `http://localhost:3000` no navegador. Para jogar com outras pessoas, publique o projeto em um host que suporte Node.js e WebSockets/Socket.IO.
+1. Instale Node.js 20 ou superior.
+2. Na pasta do projeto, execute `npm install`.
+3. Execute `npm start`.
+4. Abra `http://localhost:3000` (ou a URL/porta informada pelo host).
 
-## O que mudou na V5
-- Corrigido o cálculo do vetor de movimento e do ângulo do personagem, que podia fazê-lo andar de costas.
-- Câmera em terceira pessoa reposicionada atrás da direção para a qual o personagem está virado.
-- Movimento diagonal normalizado para evitar velocidade extra nas diagonais.
-- Tela inicial de carregamento com progresso visual.
-- Aviso para girar o celular para paisagem e ajustes para controles touch em celulares deitados.
-- Atualização da versão e da identidade visual para URBAN Roleplay V5.
+## Mudanças V6.0
 
-## Controles
-- Teclado: WASD/setas para andar, Shift para correr, E para interagir, Enter para abrir o chat.
-- Celular: analógico virtual para andar, botão Correr e botão Ação para interagir.
-- GPS: botão no mapa ou comando `/gps` no chat.
+- Refeito o controle virtual com Pointer Events e captura do ponteiro para evitar saltos quando há mais de um toque na tela.
+- Unificada a convenção de direção/rotação do personagem e corrigida a posição da câmera de acompanhamento.
+- Renderização mais leve para dispositivos móveis: pixel ratio limitado a 0,85 e sombras em tempo real desligadas.
+- Mantido salvamento automático no servidor a cada 30 segundos e ao desconectar; não é necessário botão de salvar.
+- Versão do pacote atualizada para 6.0.0.
 
-## Observação
-Esta é uma atualização do protótipo fornecido, não uma garantia de ausência absoluta de bugs. O jogo deve ser testado no aparelho e no servidor de destino; a tela de carregamento é visual e não substitui o carregamento real de assets. O APK Android precisa ser empacotado separadamente (por exemplo, com uma WebView/Cordova/Capacitor).
+## Importante
 
-
-## V5.1 — correções
-- Removido o botão manual de salvar; o servidor salva automaticamente a cada 30 segundos e na desconexão.
-- Reduzido o custo gráfico no Android (sem antialiasing e sombras em tempo real) para diminuir travamentos.
-- Corrigida a conversão da direção de movimento para a rotação do personagem.
-- O progresso real depende de testar no aparelho e na hospedagem; não é possível prometer ausência total de bugs sem teste em execução.
+Este pacote foi verificado com `node --check` nos arquivos JavaScript do projeto. Isso não substitui testes reais no Android nem comprova ausência total de bugs. O jogo ainda é um protótipo: recursos como veículos de passeio completos, colisões físicas e persistência de novos sistemas precisam de implementação/testes adicionais. Faça backup do banco de dados antes de atualizar uma instalação existente.
