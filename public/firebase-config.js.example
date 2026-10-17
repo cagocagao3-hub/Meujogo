@@ -1,0 +1,10 @@
+// Copie para firebase-config.js e preencha com os dados do seu projeto Firebase.
+// Firebase Console -> Authentication -> Sign-in method -> Google.
+// Depois habilite o domínio do Render em Authentication -> Settings -> Authorized domains.
+// Nunca cole service-account/private keys no frontend.
+export const firebaseConfig = {
+  apiKey: "SUA_API_KEY",
+  authDomain: "SEU_PROJETO.firebaseapp.com",
+  projectId: "SEU_PROJETO",
+  appId: "SEU_APP_ID"
+};
