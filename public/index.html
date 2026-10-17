@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#101820"><title>Battle Royale 1.0</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div id="game"></div>
+<div id="rotate"><div>↻</div><b>Gire o celular</b><span>Este jogo foi feito para tela horizontal.</span></div>
+<div id="hud">
+  <div class="topbar"><div class="brand">BR <span>1.0</span></div><div id="roundLabel">LOBBY</div><div id="playersLabel">JOGADORES: 1</div><button id="soundBtn" aria-label="Som">♪</button></div>
+  <div class="status"><div class="health"><span>VIDA</span><div class="bar"><i id="healthFill"></i></div><b id="healthText">100</b></div><div class="stats">KILLS <b id="kills">0</b> <span class="rank">RANQUEADA • BRONZE I</span></div></div>
+  <div id="feed"></div><div id="notice"></div>
+  <div id="lobby" class="panel"><div class="eyebrow">SOBREVIVA. ELIMINE. SUBA DE RANK.</div><h1>BATTLE ROYALE <em>1.0</em></h1><p>Protótipo online • Arena de treinamento</p><label>SEU NOME <input id="nameInput" maxlength="16" placeholder="Digite seu nick"></label><button id="playBtn" class="primary">JOGAR RANQUEADA <span>➜</span></button><small>Ao ser eliminado, você volta para o lobby.</small></div>
+  <div id="dead" class="panel hidden"><div class="eyebrow">FIM DE JOGO</div><h1>VOCÊ FOI <em>ELIMINADO</em></h1><p id="deadText">Volte ao lobby e tente novamente.</p><button id="backBtn" class="primary">VOLTAR AO LOBBY</button></div>
+  <div id="controls" class="hidden">
+    <div id="joystick"><div id="joyBase"><div id="joyKnob"></div></div><span>MOVER</span></div>
+    <div id="actions"><button id="crouchBtn">AGACHAR</button><button id="jumpBtn">PULAR</button><button id="runBtn">CORRER</button><button id="shootBtn" class="shoot">●<small>ATIRAR</small></button></div>
+    <div id="crosshair">+</div><div id="aimHint">Arraste no lado direito para olhar</div>
+  </div>
+  <div id="killToast"></div>
+</div>
+<script src="/socket.io/socket.io.js"></script>
+<script type="module" src="/game.js"></script>
+</body></html>
